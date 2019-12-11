@@ -1,4 +1,3 @@
-
 package modelo;
 
 import java.sql.Connection;
@@ -78,7 +77,11 @@ public class Alumno {
     public void setGenero(String genero) {
         this.genero = new SimpleStringProperty(genero);
     }
+    
+    
+    /**************************************************************************/
 
+    
     public IntegerProperty codigoAlumnoProperty() {
         return codigoAlumno;
     }
@@ -98,9 +101,43 @@ public class Alumno {
     public StringProperty generoProperty() {
         return genero;
     }
+    
+    
+    /**********************************************************************/
+    
+    
+    public Date getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(Date fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public CentroEstudios getCentroEstudios() {
+        return centroEstudios;
+    }
+
+    public void setCentroEstudios(CentroEstudios centroEstudios) {
+        this.centroEstudios = centroEstudios;
+    }
+
+    public Carrera getCarrera() {
+        return carrera;
+    }
+
+    public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
+    }
+    
+    
+    /****************************** METODOS *********************************
+     ***************************************************************************/
+    
+    
 
     public void guardarRegistro() {
-
+        
     }
 
     public void actualizarRegistro() {

@@ -14,9 +14,9 @@ public class Conexion_CursoBasico {
     private Connection connection;
     //private String url = "jdbc:mysql://localhost/dbregistrofx";
     //private String url = "jdbc:mysql://localhost/dbregistrofx?autoReconnect=true&useSSL=false";
-    private String url = "jdbc:mysql://34.95.239.9:3306/dbregistrofx?autoReconnect=true&useSSL=false";
-    private String usuario = "admin";
-    private String password = "gus7xv0";
+    private String url = "jdbc:mysql://34.95.173.255:3306/dbregistrofx?autoReconnect=true&useSSL=false";
+    private String usuario = "root";
+    private String password = "7Xor&x#.hFfP";
 
     public Connection getConnection() {
         return connection;
