@@ -155,13 +155,17 @@ public class Alumno {
                     "SELECT tbl_alm.codigo_alumno, \n"
                     + "		tbl_alm.nombre, \n"
                     + "		tbl_alm.apellido, \n"
-                    + "        tbl_alm.edad, \n"
-                    + "        tbl_alm.genero, \n"
-                    + "        tbl_alm.fecha_ingreso, \n"
-                    + "        tbl_alm.codigo_centro, \n"
-                    + "        tbl_alm.codigo_carrera FROM tbl_alumnos tbl_alm\n"
-                    + "        INNER JOIN tbl_centros_estudio tbl_ce ON tbl_ce.codigo_centro = tbl_alm.codigo_centro\n"
-                    + "        INNER JOIN tbl_carreras tbl_ca ON tbl_ca.codigo_carrera = tbl_alm.codigo_carrera;"
+                    + "         tbl_alm.edad, \n"
+                    + "         tbl_alm.genero, \n"
+                    + "         tbl_alm.fecha_ingreso, \n"
+                    + "         tbl_alm.codigo_centro, \n"
+                    + "         tbl_alm.codigo_carrera, \n"
+                    + "         tbl_ce.nombre_centro_estudio, \n"
+                    + "         tbl_ca.nombre_carrera, \n"
+                    + "         tbl_ca.cantidad_asignaturas \n"
+                    + "         FROM tbl_alumnos tbl_alm\n"
+                    + "         INNER JOIN tbl_centros_estudio tbl_ce ON tbl_ce.codigo_centro = tbl_alm.codigo_centro\n"
+                    + "         INNER JOIN tbl_carreras tbl_ca ON tbl_ca.codigo_carrera = tbl_alm.codigo_carrera;"
             );
             while (resultado.next()) {
                 lista.add(new Alumno(
@@ -172,7 +176,8 @@ public class Alumno {
                         resultado.getString("genero"),
                         resultado.getDate("fecha_ingreso"),
                         new CentroEstudios(resultado.getInt("codigo_centro"), resultado.getString("codigo_carrera")),
-                        new Carrera(resultado.getInt("codigo_carrera"), resultado.getString("nombreCarrera"), resultado.getInt("cantidad_asignaturas"))
+                        new Carrera(resultado.getInt("codigo_carrera"), resultado.getString("nombre_carrera"), resultado.getInt("cantidad_asignaturas"))
+                        
                 )
                 );
             }

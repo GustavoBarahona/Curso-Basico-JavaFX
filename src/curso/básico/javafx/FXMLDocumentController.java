@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Alumno;
 import modelo.Carrera;
 import modelo.CentroEstudios;
@@ -91,7 +92,15 @@ public class FXMLDocumentController implements Initializable {
         cbxCentroEstudio.setItems(listaCentroEstudios);
         tblViewAlumno.setItems(listaAlumnos);
             
-        
+        //Enlazar columnas con atributos
+        clmnCodigoAlumno.setCellValueFactory(new PropertyValueFactory<Alumno, Number>("codigoAlumno"));
+        clmnNombre.setCellValueFactory(new PropertyValueFactory<Alumno, String>("nombre"));
+        clmnApellido.setCellValueFactory(new PropertyValueFactory<Alumno, String>("apellido"));
+        clmnEdad.setCellValueFactory(new PropertyValueFactory<Alumno, Number>("edad"));
+        clmnGenero.setCellValueFactory(new PropertyValueFactory<Alumno, String>("genero"));
+        clmnFechaIngreso.setCellValueFactory(new PropertyValueFactory<Alumno, Date>("fechaIngreso"));
+        clmnCarrera.setCellValueFactory(new PropertyValueFactory<Alumno, Carrera>("carrera"));
+        clmnCentroEstudio.setCellValueFactory(new PropertyValueFactory<Alumno, CentroEstudios>("centroEstudios"));
 
         conexion.cerrarConexion();
     }
