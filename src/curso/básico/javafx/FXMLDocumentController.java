@@ -11,14 +11,20 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Alumno;
@@ -68,6 +74,28 @@ public class FXMLDocumentController implements Initializable {
     private ObservableList<Alumno> listaAlumnos;
 
     private Conexion_CursoBasico conexion;
+    @FXML
+    private TextField txt_codigo;
+    @FXML
+    private TextField txt_nombre;
+    @FXML
+    private TextField txt_apellido;
+    @FXML
+    private TextField txt_edad;
+    @FXML
+    private DatePicker dtpkr_fecha;
+    @FXML
+    private RadioButton rbt_femenino;
+    @FXML
+    private RadioButton rbt_masculino;
+    @FXML
+    private Button btn_guardar;
+    @FXML
+    private Button btn_actualizar;
+    @FXML
+    private Button btn_eliminar;
+    @FXML
+    private Button btn_nuevo;
     
 
     @Override
@@ -102,7 +130,53 @@ public class FXMLDocumentController implements Initializable {
         clmnCarrera.setCellValueFactory(new PropertyValueFactory<Alumno, Carrera>("carrera"));
         clmnCentroEstudio.setCellValueFactory(new PropertyValueFactory<Alumno, CentroEstudios>("centroEstudios"));
 
+        gestionarEventos();
+        
         conexion.cerrarConexion();
+    }
+
+    private void gestionarEventos() {
+        tblViewAlumno.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Alumno>() {
+            @Override
+            public void changed(ObservableValue<? extends Alumno> observable, 
+                    Alumno oldValue, Alumno newValue) {                
+                txt_codigo.setText(newValue.getCodigoAlumno().toString());
+                txt_nombre.setText(newValue.getNombre());
+                txt_apellido.setText(newValue.getApellido());
+                txt_edad.setText(newValue.getEdad().toString());
+                if(newValue.getGetero().equals("F")){
+                    rbt_femenino.setSelected(true);
+                    rbt_masculino.setSelected(false);
+                }else{
+                    rbt_femenino.setSelected(false);
+                    rbt_masculino.setSelected(true);
+                }
+                dtpkr_fecha.setValue(newValue.getFechaIngreso().toLocalDate());
+                cbxCarrera.setValue(newValue.getCarrera());
+                cbxCentroEstudio.setValue(newValue.getCentroEstudios());
+                
+                btn_guardar.setDisable(true);
+                btn_actualizar.setDisable(false);
+                btn_eliminar.setDisable(false);
+            }
+        });
+    }
+    
+    @FXML
+    public void limpiarComponentes(){
+        txt_codigo.setText(null);
+        txt_nombre.setText(null);
+        txt_apellido.setText(null);
+        txt_edad.setText(null);
+        rbt_femenino.setSelected(false);
+        rbt_masculino.setSelected(false);
+        dtpkr_fecha.setValue(null);
+        cbxCarrera.setValue(null);
+        cbxCentroEstudio.setValue(null);
+        
+        btn_guardar.setDisable(false);
+        btn_eliminar.setDisable(true);
+        btn_actualizar.setDisable(true);        
     }
 
 }
