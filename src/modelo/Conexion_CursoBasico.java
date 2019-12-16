@@ -12,11 +12,19 @@ import java.sql.SQLException;
 public class Conexion_CursoBasico {
 
     private Connection connection;
+    //Conexión local normal:
     //private String url = "jdbc:mysql://localhost/dbregistrofx";
+    
+    //Conexión local con mysql versión avanzada:
     //private String url = "jdbc:mysql://localhost/dbregistrofx?autoReconnect=true&useSSL=false";
-    private String url = "jdbc:mysql://34.95.173.255:3306/dbregistrofx?autoReconnect=true&useSSL=false";
-    private String usuario = "root";
-    private String password = "7Xor&x#.hFfP";
+    
+    //Conexión Google Cloud:
+    //private String url = "jdbc:mysql://34.95.173.255:3306/dbregistrofx?autoReconnect=true&useSSL=false";
+    
+    //Conexión Clever cloud:
+    private String url = "jdbc:mysql://b78su5y6rebprkruiwnu-mysql.services.clever-cloud.com:3306/b78su5y6rebprkruiwnu?autoReconnect=true&useSSL=false";
+    private String usuario = "ugwiimutpwayi1px";
+    private String password = "yhV8PK6hRRPg8f53d6xG";
 
     public Connection getConnection() {
         return connection;
