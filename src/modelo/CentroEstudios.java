@@ -67,6 +67,6 @@ public class CentroEstudios {
     
     @Override
     public String toString(){
-        return codigo_centro.get() + " " + nombre_centro_estudio.get();
+        return codigo_centro.get() +" "+ nombre_centro_estudio.get();
     }
 }

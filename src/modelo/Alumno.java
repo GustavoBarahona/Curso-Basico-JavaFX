@@ -2,6 +2,7 @@ package modelo;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -77,11 +78,10 @@ public class Alumno {
     public void setGenero(String genero) {
         this.genero = new SimpleStringProperty(genero);
     }
-    
-    
-    /**************************************************************************/
 
-    
+    /**
+     * ***********************************************************************
+     */
     public IntegerProperty codigoAlumnoProperty() {
         return codigoAlumno;
     }
@@ -101,11 +101,10 @@ public class Alumno {
     public StringProperty generoProperty() {
         return genero;
     }
-    
-    
-    /**********************************************************************/
-    
-    
+
+    /**
+     * *******************************************************************
+     */
     public Date getFechaIngreso() {
         return fechaIngreso;
     }
@@ -129,23 +128,71 @@ public class Alumno {
     public void setCarrera(Carrera carrera) {
         this.carrera = carrera;
     }
-    
-    
-    /****************************** METODOS *********************************
-     ***************************************************************************/
-    
-    
 
-    public void guardarRegistro() {
-        
+    /**
+     * **************************** METODOS *********************************
+     * *************************************************************************
+     */
+    public int guardarRegistro(Connection conexion) {
+        try {
+            PreparedStatement instruccion
+                    = conexion.prepareStatement("INSERT INTO tbl_alumnos (nombre, apellido, edad, genero,"
+                            + "fecha_ingreso, codigo_carrera, codigo_centro)"
+                            + "values(?,?,?,?,?,?,?)");
+            instruccion.setString(1, nombre.get());
+            instruccion.setString(2, apellido.get());
+            instruccion.setInt(3, edad.get());
+            instruccion.setString(4, genero.get());
+            instruccion.setDate(5, fechaIngreso);
+            instruccion.setInt(6, carrera.getCodigoCarrera());
+            instruccion.setInt(7, centroEstudios.getCodigoCentro());
+            return instruccion.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
-    public void actualizarRegistro() {
+    public int actualizarRegistro(Connection conexion) {
 
+        try {
+            PreparedStatement instruccion
+                    = conexion.prepareStatement("UPDATE tbl_alumnos SET "
+                            + "nombre = ?,"
+                            + "apellido = ?,"
+                            + "edad = ?,"
+                            + "fecha_ingreso = ?,"
+                            + "codigo_carrera = ?,"
+                            + "codigo_centro = ?,"
+                            + "genero = ?"
+                            + "WHERE codigo_alumno = ?");
+            instruccion.setString(1, nombre.get());
+            instruccion.setString(2, apellido.get());
+            instruccion.setInt(3, edad.get());
+
+            instruccion.setDate(4, fechaIngreso);
+            instruccion.setInt(5, carrera.getCodigoCarrera());
+            instruccion.setInt(6, centroEstudios.getCodigoCentro());
+            instruccion.setString(7, genero.get());
+            instruccion.setInt(8, codigoAlumno.get());
+            return instruccion.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
-    public void eliminarRegistro() {
-
+    public int eliminarRegistro(Connection conexion) {
+        try {
+            PreparedStatement instruccion = conexion.prepareStatement(
+            "DELETE FROM tbl_alumnos WHERE codigo_alumno = ?");
+            instruccion.setInt(1, codigoAlumno.get());
+            return instruccion.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public static void llenarInformacion(Connection conexion, ObservableList<Alumno> lista) {
@@ -175,9 +222,8 @@ public class Alumno {
                         resultado.getInt("edad"),
                         resultado.getString("genero"),
                         resultado.getDate("fecha_ingreso"),
-                        new CentroEstudios(resultado.getInt("codigo_centro"), resultado.getString("codigo_carrera")),
+                        new CentroEstudios(resultado.getInt("codigo_centro"), resultado.getString("nombre_centro_estudio")),
                         new Carrera(resultado.getInt("codigo_carrera"), resultado.getString("nombre_carrera"), resultado.getInt("cantidad_asignaturas"))
-                        
                 )
                 );
             }

@@ -17,6 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javax.swing.JOptionPane;
 import modelo.Alumno;
 import modelo.Carrera;
 import modelo.CentroEstudios;
@@ -54,9 +56,7 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn<Alumno, CentroEstudios> clmnCentroEstudio;
     @FXML
     private TableColumn<Alumno, Carrera> clmnCarrera;
-    
-    
-    
+
     private Label label;
     @FXML
     private ToggleGroup GrupoGenero;
@@ -65,7 +65,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private ComboBox<CentroEstudios> cbxCentroEstudio;
-    
+
     @FXML
     private TableView<Alumno> tblViewAlumno;
 
@@ -96,7 +96,6 @@ public class FXMLDocumentController implements Initializable {
     private Button btn_eliminar;
     @FXML
     private Button btn_nuevo;
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -119,7 +118,7 @@ public class FXMLDocumentController implements Initializable {
         //listaCarreras.add(new Carrera(1, "Carrera 1", 56));        
         cbxCentroEstudio.setItems(listaCentroEstudios);
         tblViewAlumno.setItems(listaAlumnos);
-            
+
         //Enlazar columnas con atributos
         clmnCodigoAlumno.setCellValueFactory(new PropertyValueFactory<Alumno, Number>("codigoAlumno"));
         clmnNombre.setCellValueFactory(new PropertyValueFactory<Alumno, String>("nombre"));
@@ -131,39 +130,125 @@ public class FXMLDocumentController implements Initializable {
         clmnCentroEstudio.setCellValueFactory(new PropertyValueFactory<Alumno, CentroEstudios>("centroEstudios"));
 
         gestionarEventos();
-        
+
         conexion.cerrarConexion();
     }
 
     private void gestionarEventos() {
         tblViewAlumno.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Alumno>() {
             @Override
-            public void changed(ObservableValue<? extends Alumno> observable, 
-                    Alumno oldValue, Alumno newValue) {                
-                txt_codigo.setText(newValue.getCodigoAlumno().toString());
-                txt_nombre.setText(newValue.getNombre());
-                txt_apellido.setText(newValue.getApellido());
-                txt_edad.setText(newValue.getEdad().toString());
-                if(newValue.getGetero().equals("F")){
-                    rbt_femenino.setSelected(true);
-                    rbt_masculino.setSelected(false);
-                }else{
-                    rbt_femenino.setSelected(false);
-                    rbt_masculino.setSelected(true);
+            public void changed(ObservableValue<? extends Alumno> observable,
+                    Alumno oldValue, Alumno newValue) {
+                if (newValue != null) {
+                    txt_codigo.setText(newValue.getCodigoAlumno().toString());
+                    txt_nombre.setText(newValue.getNombre());
+                    txt_apellido.setText(newValue.getApellido());
+                    txt_edad.setText(newValue.getEdad().toString());
+                    if (newValue.getGetero().equals("F")) {
+                        rbt_femenino.setSelected(true);
+                        rbt_masculino.setSelected(false);
+                    } else {
+                        rbt_femenino.setSelected(false);
+                        rbt_masculino.setSelected(true);
+                    }
+                    dtpkr_fecha.setValue(newValue.getFechaIngreso().toLocalDate());
+                    cbxCarrera.setValue(newValue.getCarrera());
+                    cbxCentroEstudio.setValue(newValue.getCentroEstudios());
+
+                    btn_guardar.setDisable(true);
+                    btn_actualizar.setDisable(false);
+                    btn_eliminar.setDisable(false);
                 }
-                dtpkr_fecha.setValue(newValue.getFechaIngreso().toLocalDate());
-                cbxCarrera.setValue(newValue.getCarrera());
-                cbxCentroEstudio.setValue(newValue.getCentroEstudios());
-                
-                btn_guardar.setDisable(true);
-                btn_actualizar.setDisable(false);
-                btn_eliminar.setDisable(false);
+
             }
         });
     }
+
+    @FXML
+    public void guardarRegistro() {
+        //Creamos una instancia del tipo Alumno:
+        Alumno a = new Alumno(
+                0,
+                txt_nombre.getText(),
+                txt_apellido.getText(),
+                Integer.valueOf(txt_edad.getText()),
+                rbt_femenino.isSelected() ? "F" : "M",
+                Date.valueOf(dtpkr_fecha.getValue()),
+                cbxCentroEstudio.getSelectionModel().getSelectedItem(),
+                cbxCarrera.getSelectionModel().getSelectedItem());
+
+        conexion.establecerConexion();
+        int resultado = a.guardarRegistro(conexion.getConnection());
+        conexion.cerrarConexion();
+
+        if (resultado == 1) {
+
+            listaAlumnos.add(a);//Actualizamos la tabla
+            
+            Alert msj = new Alert(Alert.AlertType.INFORMATION);
+            msj.setTitle("Registro agregado");
+            msj.setContentText("El registro ha sido agregado exitósamente");
+            msj.setHeaderText("Resultado");
+            msj.show();
+        }
+    }
+
+    @FXML
+    public void actualizarRegistro() {
+        //Creamos una instancia del tipo Alumno:
+        Alumno a = new Alumno(
+                Integer.valueOf(txt_codigo.getText()),
+                txt_nombre.getText(),
+                txt_apellido.getText(),
+                Integer.valueOf(txt_edad.getText()),
+                rbt_femenino.isSelected() ? "F" : "M",
+                Date.valueOf(dtpkr_fecha.getValue()),
+                cbxCentroEstudio.getSelectionModel().getSelectedItem(),
+                cbxCarrera.getSelectionModel().getSelectedItem());
+
+        conexion.establecerConexion();
+        int resultado = a.actualizarRegistro(conexion.getConnection());
+        conexion.cerrarConexion();
+
+        if (resultado == 1) {
+
+            listaAlumnos.set(tblViewAlumno.getSelectionModel().getSelectedIndex(), a);
+
+            Alert msj = new Alert(Alert.AlertType.INFORMATION);
+            msj.setTitle("Registro actualizado");
+            msj.setContentText("El registro ha sido actualizado exitósamente");
+            msj.setHeaderText("Resultado");
+            msj.show();
+        }else{
+            Alert msj = new Alert(Alert.AlertType.ERROR);
+            msj.setTitle("Error");
+            msj.setContentText("El registro no ha sido actualizado exitósamente");
+            msj.setHeaderText("Resultado");
+            msj.show();
+        }
+            
+    }
     
     @FXML
-    public void limpiarComponentes(){
+    public void emilimarRegistro(){
+        conexion.establecerConexion();
+        int resultado = tblViewAlumno.getSelectionModel().getSelectedItem().eliminarRegistro(conexion.getConnection());
+        conexion.cerrarConexion();
+        
+        if (resultado == 1) {
+
+            listaAlumnos.remove(tblViewAlumno.getSelectionModel().getSelectedIndex());
+
+            Alert msj = new Alert(Alert.AlertType.INFORMATION);
+            msj.setTitle("Registro eliminado");
+            msj.setContentText("El registro ha sido eliminado exitósamente");
+            msj.setHeaderText("Resultado");
+            msj.show();
+        }
+    }
+
+    @FXML
+    public void limpiarComponentes() {
         txt_codigo.setText(null);
         txt_nombre.setText(null);
         txt_apellido.setText(null);
@@ -173,10 +258,10 @@ public class FXMLDocumentController implements Initializable {
         dtpkr_fecha.setValue(null);
         cbxCarrera.setValue(null);
         cbxCentroEstudio.setValue(null);
-        
+
         btn_guardar.setDisable(false);
         btn_eliminar.setDisable(true);
-        btn_actualizar.setDisable(true);        
+        btn_actualizar.setDisable(true);
     }
 
 }

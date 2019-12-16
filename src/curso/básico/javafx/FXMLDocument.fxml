@@ -106,9 +106,9 @@
                   </GridPane>
                   <HBox layoutY="296.0" prefHeight="56.0" prefWidth="355.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Button fx:id="btn_guardar" mnemonicParsing="false" text="Guardar" />
-                        <Button fx:id="btn_actualizar" disable="true" mnemonicParsing="false" text="Actualizar" />
-                        <Button fx:id="btn_eliminar" disable="true" mnemonicParsing="false" text="Eliminar" />
+                        <Button fx:id="btn_guardar" mnemonicParsing="false" onAction="#guardarRegistro" text="Guardar" />
+                        <Button fx:id="btn_actualizar" disable="true" mnemonicParsing="false" onAction="#actualizarRegistro" text="Actualizar" />
+                        <Button fx:id="btn_eliminar" disable="true" mnemonicParsing="false" onAction="#emilimarRegistro" text="Eliminar" />
                         <Button fx:id="btn_nuevo" mnemonicParsing="false" onAction="#limpiarComponentes" text="Nuevo" />
                      </children>
                   </HBox>
